@@ -1,7 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { ChoseTypeUser } from '../Screens/ChoseTypeUser';
-import { NavigationAdd } from './Add/NavigationAdd';
-
+import { LoginScreen } from '../Screens/LoginScreen';
 const Stack=createStackNavigator()
 
 export const NavigationOut=()=>{
@@ -11,9 +9,7 @@ export const NavigationOut=()=>{
             headerShown:false
         }}
         >
-            <Stack.Screen name="ChoseTypeUser" component={ChoseTypeUser}  />
-            <Stack.Screen name="NavigationAdd" component={NavigationAdd}  />
-       
+            <Stack.Screen  name="LoginScreen" component={LoginScreen} />
         </Stack.Navigator>
     )
 }
