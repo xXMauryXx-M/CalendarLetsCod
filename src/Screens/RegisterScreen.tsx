@@ -1,49 +1,43 @@
-import React from 'react'
-import { Formik ,ErrorMessage} from 'formik';
-import { View,Text,StyleSheet,TouchableOpacity, useWindowDimensions, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import * as Yup from "yup"
-import { TexCustomInput } from '../Componets/TexCustomInput';
-import auth from "@react-native-firebase/auth"
-import { useNavigation } from '@react-navigation/native';
-export const LoginScreen = () => {
-   const {width}= useWindowDimensions()
-const navigation=useNavigation<any>()
-   const AuthLogin=(email:string,Password:string)=>{
-    
-    auth().signInWithEmailAndPassword(email,Password).
-    then(()=>{
-     Alert.alert("Usuario Creado")
-       
-    }).catch((error)=>{
-         if(error.code=="auth/email-already-in-use"){
-            Alert.alert("Email ya ha sido registrado")
-         }
-    })
-    
-   }
+import React from "react"
+import { ErrorMessage, Formik } from "formik";
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Alert } from 'react-native';
+import * as Yup from 'yup';
+import { TexCustomInput } from "../Componets/TexCustomInput";
+import auth from '@react-native-firebase/auth';
+import{useNavigation} from "@react-navigation/native"
+export const RegisterScreen=()=>{
+const Navigation = useNavigation<any>()
+    const AuthRegister=(email:string,password:string)=>{
 
+        auth().createUserWithEmailAndPassword(email,password).
+        then(()=>{
+            Alert.alert("usuario creado")
+        }).catch((error)=>{
+              Alert.alert(error)
+        })
+    }
+     const {width}= useWindowDimensions()
+    return(
 
-  return (
-    <View style={styles.container} >    
-       <Text style={[styles.LoginTitle]} >Hello</Text>
-       <Text style={{fontSize:20, alignSelf:"center",fontWeight:"700",marginBottom:40}} >Sign in to your Account</Text>
-      
+<View style={styles.container} >    
+       <Text style={[styles.LoginTitle]} >Register</Text>
       <View>
     
             <Formik
             initialValues={{
+            name:"",
             email:"",
             password:"",
         
             }}
 
             onSubmit={(values)=>{
-           AuthLogin(values.email,values.password)
+                AuthRegister(values.email,values.password)
             }}
 
             validationSchema={
             Yup.object({
+                name:Yup.string().required("necesario") ,
                 email:Yup.string().email("ingresa un correo electronico válido").required("nesesario"),
                 password:Yup.string().min(5, "La contraseña debe tener almenos 5 caracateres").required("nesesario"),
             })
@@ -53,9 +47,29 @@ const navigation=useNavigation<any>()
         ({handleBlur, values, handleChange, handleSubmit,errors})=>(
        
    <>
+
+        <TexCustomInput
+           focus={false}
+           placeholder="Nombre"
+           errors={errors}
+           type="visible-password"
+           value={values.password}
+           name='name'
+           handleBlur={handleBlur}
+           nameIcon="person-circle-sharp"
+           handleChange={handleChange}
+           values={values.name} />
+
+           <Text style={styles.ErrorMessage}>
+                <ErrorMessage name="name" />
+           </Text>
+
+
+
+
            <TexCustomInput
            focus={false}
-           placeholder="Correo electrónico"
+           placeholder="Email-address"
            errors={errors}
            type="email-address"
            value={values.email}
@@ -86,23 +100,23 @@ const navigation=useNavigation<any>()
 
 
 
-    <View>
 
+
+
+    <View>
         <TouchableOpacity 
            onPress={()=>handleSubmit()}
            style={[styles.bottom,{alignSelf:"center"}]}
            activeOpacity={0.8}
         >
-           <Text style={{fontSize:23, color:"white",alignSelf:"center"}} > Siguiente </Text>
+           <Text style={{fontSize:20, color:"white",alignSelf:"center"}} > Siguiente </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=>navigation.navigate("RegisterScreen")} >
+        <TouchableOpacity onPress={()=>Navigation.navigate("LoginScreen")} >
        <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}>  don`t you have any count?</Text>
    </TouchableOpacity>
-
-       
-
    </View>   
+
 
 </>
 )}
@@ -125,7 +139,7 @@ const styles = StyleSheet.create({
         color:"#000",
         marginTop:40,
         alignItems:"center",
-
+        marginVertical:30,
         alignSelf:"center"
     },
     bottom:{
@@ -139,4 +153,6 @@ const styles = StyleSheet.create({
        marginLeft:20,
        fontWeight:"900"
    }
-});
+        
+
+})

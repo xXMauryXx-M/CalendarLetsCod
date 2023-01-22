@@ -1,4 +1,4 @@
-package com.calendarletscode;
+package com.calendar;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
