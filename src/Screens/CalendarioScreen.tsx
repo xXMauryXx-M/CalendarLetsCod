@@ -1,11 +1,55 @@
-import React from "react"
+import React,{useState,useEffect} from "react"
 import { View,StyleSheet,Text } from "react-native"
 import { Calendar,Agenda } from "react-native-calendars"
 import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import { date } from "yup";
 export const CalendarioScreen=()=>{
     //crear agenda o por default 
     //tener un apartado donde elgue  template 
     const navigation=useNavigation<any>()
+    const [rtData, setrtData] = useState([])
+    const [markedDatesd, setMarkedDates] = useState({});
+   const [otraparte, setotraparte] = useState({ selected: true, marked: true })
+
+    
+const getMarkedDates =  () => {
+ 
+  const unsubscribe = firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").onSnapshot(querySnapshot => {
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data().date)
+      // Obtener la fecha del documento
+      const dates = doc.data().date.toDate();
+      // Convertir la fecha a una cadena en formato ISO
+      const dateString = dates.toISOString();
+      
+      let cortar=dateString.slice(0,10)
+      
+      const newMarkedDates = {...markedDates};
+      newMarkedDates[cortar] = { selected: true, marked: true };
+      console.log("new marker dates"+ newMarkedDates)
+      setMarkedDates(newMarkedDates);
+    });
+});
+
+// Para desuscribirte
+unsubscribe();
+
+};
+
+
+
+
+
+  useEffect(() => {
+    getMarkedDates()
+
+  }, [])
+
+
+
+
         return(
         <View style={style.container} >
            <Calendar 
@@ -42,15 +86,11 @@ export const CalendarioScreen=()=>{
 
             }}
               disabledArrowLeft = { true } 
+               markedDates={markedDatesd}
               //las citas estaran en un reducer para que sea mas legible
              //esto dependera primero si tiene cita el usurio si no tiene no se mostrara nada de lo contrario las citas
-              markedDates={{
-                '2023-01-16': {selected: true, marked: true, selectedColor: '#00adf5'},
-                '2023-01-17': {marked: true},
-                '2023-01-18': {selected: true, marked: true, selectedColor: '#00adf5'},
-                '2023-01-19': {selected: true, marked: true, selectedColor: '#00adf5'}
-              }}
-
+              //  markedDates={markedDatesd.d}
+           
            /> 
 
            

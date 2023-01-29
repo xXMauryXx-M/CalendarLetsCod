@@ -12,7 +12,7 @@ interface Props{
   nameIcon:string
   value:any
   type:any
-errors:any
+errors?:any
 placeholder:any
 focus:any
 }
