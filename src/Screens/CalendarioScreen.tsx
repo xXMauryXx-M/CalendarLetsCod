@@ -1,18 +1,16 @@
 import React,{useState,useEffect} from "react"
-import { View,StyleSheet,Text } from "react-native"
-import { Calendar,Agenda } from "react-native-calendars"
+import { View,StyleSheet } from "react-native"
+import { Calendar } from "react-native-calendars"
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { date } from "yup";
-export const CalendarioScreen=()=>{
-    //crear agenda o por default 
-    //tener un apartado donde elgue  template 
-    const navigation=useNavigation<any>()
-    const [rtData, setrtData] = useState([])
-    const [markedDatesd, setMarkedDates] = useState({});
-   const [otraparte, setotraparte] = useState({ selected: true, marked: true })
 
+
+
+export const CalendarioScreen=()=>{
+    const navigation=useNavigation<any>()
+    const [markedDatesd, setMarkedDates] = useState<any>({});
+  
     
 const getMarkedDates =  () => {
  
@@ -26,7 +24,7 @@ const getMarkedDates =  () => {
       
       let cortar=dateString.slice(0,10)
       
-      const newMarkedDates = {...markedDates};
+      const newMarkedDates = {...markedDatesd};
       newMarkedDates[cortar] = { selected: true, marked: true };
       console.log("new marker dates"+ newMarkedDates)
       setMarkedDates(newMarkedDates);
@@ -87,9 +85,7 @@ unsubscribe();
             }}
               disabledArrowLeft = { true } 
                markedDates={markedDatesd}
-              //las citas estaran en un reducer para que sea mas legible
-             //esto dependera primero si tiene cita el usurio si no tiene no se mostrara nada de lo contrario las citas
-              //  markedDates={markedDatesd.d}
+          
            
            /> 
 

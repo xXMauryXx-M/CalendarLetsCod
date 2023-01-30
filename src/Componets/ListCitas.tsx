@@ -1,58 +1,80 @@
 import React,{useState} from 'react'
-import { View, Text, TouchableOpacity, Alert, useWindowDimensions, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, TouchableOpacity, useWindowDimensions, StyleSheet, Alert } from 'react-native';
 import { ModalAppointment } from './ModalAppointment';
 
- export interface PropsFirebaseCitas{
-    hour:string,
-    day:string,
-    message:string,
-    minute:string,
-    notification:string
-}
+import { AppointmentDataFirebase } from './ShowTask';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-export const ListCitas = ({  infoCitas,paramsDay}:any) => {
-  console.log(infoCitas.minute)
-    const {width,height}= useWindowDimensions()
-    const [isModalVisible, setModalVisible] = useState(false);
-    const toggleModal = () => {
-      setModalVisible(!isModalVisible);
-    };
+export const ListCitas = ({ infoCitas }: { infoCitas: AppointmentDataFirebase }) => {
+  console.log(infoCitas.key)
+  const [isModalVisible, setModalVisible] = useState(false); 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const {width}= useWindowDimensions()
+
+  const eliminarCita=(key:string)=>{
+    
+firestore().collection('Users')
+.doc(auth().currentUser?.email as any).collection("Citas").doc(key)
+.delete()
+.then(() => {
+  console.log('User deleted!');
+});
+  }
+
+  
+  const showAlert=(infocitas:AppointmentDataFirebase)=>{
+    Alert.alert(
+        "Borrar Cita",
+       `Estas seguro que quieres borrar la cita con la hora ${infocitas.Hour}:${infoCitas.minute} `,
+        [
+            {
+                text:"cancelar",
+                onPress:()=>console.log("cancel presses"),
+                style:"cancel"
+                
+            },
+            {text:"delete",  onPress:()=>eliminarCita(infoCitas.key) }
+        ]
+        ,{
+            //puedes hacer click afuera para cerrarlo 
+            cancelable:true,
+            onDismiss:()=>console.log("onDesmiss")
+    
+        }
+    )
+        }
+
     return (
     <View style={{flex:1}} >
-        {/* si el dia que selecionate tiene cita  */}
-   
-    <TouchableOpacity
-    activeOpacity={0.7}
-    onPress={()=>toggleModal()}
+          <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={()=>toggleModal()}
+              onLongPress={()=>showAlert(infoCitas)}
+              style={[styles.bottomAdd,{ width:width/1.2}]}                            
+        >
+            <View style={styles.container}>
+                <Text style={styles.title}>{infoCitas.Hour}:{infoCitas.minute}</Text>
+                <Text style={styles.subtitle}>{infoCitas.message}</Text>
+            </View>
+        </TouchableOpacity>  
 
-    style={{padding:20,width:width/1.2,alignSelf:"center", marginTop:"20%"}}                            
-   >
-  <View style={styles.container}>
-   <Text style={styles.title}>{infoCitas.Hour}</Text>
-   <Text style={styles.subtitle}>{infoCitas.message}</Text>
-</View>
-    </TouchableOpacity>  
-
- 
- 
-
-    <ModalAppointment 
-    isModalVisible={isModalVisible}
-    toggleModal={toggleModal}
-    title={"Actualizacion"}
-    hora={infoCitas.Hour}
-    message={infoCitas.message}
-    minute={infoCitas.minute}
-
-    />
+          <ModalAppointment 
+             isModalVisible={isModalVisible}
+             toggleModal={toggleModal}
+             title={"Actualizacion"}
+             hora={infoCitas.Hour}
+             message={infoCitas.message}
+             minute={infoCitas.minute}
+             type={"actualizar"}
+          />
      
     </View>
   )
 }
 
-
-  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -77,6 +99,11 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: 'gray'
+  },
+  bottomAdd:{
+    padding:20,
+    alignSelf:"center", 
+
   }
 });
 

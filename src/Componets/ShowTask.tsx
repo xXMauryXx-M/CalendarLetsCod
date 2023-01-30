@@ -4,8 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ListCitas} from './ListCitas';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-interface AppointmentDataFirebase {
+export interface AppointmentDataFirebase {
     startTime: string;
     endTime: string;
     description: string;
@@ -24,7 +23,7 @@ export const ShowTask=({daySelected}:any)=>{
         loadappointment();
     },[])
     const loadappointment=()=>{
-        const suscriber=  firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas"). onSnapshot(querySnapshot=>{
+        const suscriber=  firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").orderBy("date","asc"). onSnapshot(querySnapshot=>{
             const appointment:AppointmentDataFirebase[]=[]
             querySnapshot.forEach(documentSnapshot=>{
                 appointment.push({
@@ -55,7 +54,7 @@ export const ShowTask=({daySelected}:any)=>{
                     citasEnFechaSeleccionada.length >0 ?
                     <FlatList 
                     data={citasEnFechaSeleccionada}
-                    renderItem={({item})=> <ListCitas infoCitas={item} paramsDay={daySelected} />}
+                    renderItem={({item})=> <ListCitas infoCitas={item} />}
                     /> 
                     :
                     <View style={styles.containerDosentDates} >
