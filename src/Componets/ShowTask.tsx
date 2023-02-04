@@ -1,20 +1,20 @@
 import React,{useState,useEffect} from "react"
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ListCitas} from './ListCitas';
 import Icon from 'react-native-vector-icons/Ionicons';
 export interface AppointmentDataFirebase {
-    startTime: string;
-    endTime: string;
-    description: string;
+    startTime?: string;
+    endTime?: string;
+    description?: string;
     key:string;
-    day:string
-    message:string,
-    minute:string,
-    notification:boolean,
-    date:any,
-    Hour:string
+    day?:string
+    message?:string,
+    minute?:string,
+    notification?:boolean,
+    date?:any,
+    Hour?:string
   }
 
 export const ShowTask=({daySelected}:any)=>{
@@ -49,7 +49,8 @@ export const ShowTask=({daySelected}:any)=>{
  const citasEnFechaSeleccionada = appointmentData.filter(cita=>cita.day==daySelected)
     
     return(
-        <>
+        < >
+         {/* <Text style={{position:"absolute",top:0}} >Atras</Text> */}
             {
                     citasEnFechaSeleccionada.length >0 ?
                     <FlatList 
@@ -62,8 +63,8 @@ export const ShowTask=({daySelected}:any)=>{
                         <Icon 
                         name="calendar-outline" 
                         size={50} 
-                        style={{alignSelf:"center"}} />
-                    </View>
+                        style={{alignSelf:"center",color:"white"}} />
+                     </View>
 
             }
           
@@ -79,7 +80,8 @@ const styles = StyleSheet.create({
     },
     titleDosentDate:{
         fontSize:30,
-        alignSelf:"center"
+        alignSelf:"center",
+        color:"white"
 
     }
     

@@ -4,30 +4,38 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import * as Animatable from 'react-native-animatable';
+import { DaySelected } from '../Screens/DaySelected';
+
 
 interface ModalOpenClose{
     isModalVisible:boolean,
     toggleModal: () => void,
-    paramsDay?:string,
+    paramsDay?:any,
     title?:string,
     hora?:string,
     message?:string
     botonName?:string,
     minute?:string
     type?:string
+    doc?:string
    
 }
 
-export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,message,hora, botonName,minute,type}:ModalOpenClose) => {    
- 
- 
+export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,message,hora, botonName,minute,type,doc}:ModalOpenClose) => {    
+
+
+
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [inpuntMessage, setinpuntMessage] = useState(message)
     const [dateSelected, setdateSelected] = useState<Date|null>()
     const [isEnabled, setIsEnabled] = useState(false);
-    const CurrenDate=new Date()
-    const timestamp = firestore.Timestamp.fromDate(CurrenDate);
+   
 
+    const mes = new Date().getMonth()
+    const spesificDate = new Date(2023,mes,paramsDay??0);
+    const firebaseTimestamp = firestore.Timestamp.fromDate ( new Date(spesificDate))
+    // const firebaseTimestamp = firestore.Timestamp.fromDate(spesificDate)
+    
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const hideDatePicker = () => {
@@ -44,22 +52,29 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
       
         
       const update=()=>{
-             
         firestore()
-        .collection('Users')
-        .doc('ABC')
+        .collection('Users')   
+        .doc(auth().currentUser?.email as any)
+        .collection("Citas").
+        doc(doc)
         .update({
-          'info.address.zipcode': 94040,
+
+          Hour:new Date(dateSelected!).getHours(),
+          minute: new Date(dateSelected!).getMinutes(),
+          message:inpuntMessage,   
         })
         .then(() => {
-          Alert.alert("nota acualzada")
+          toggleModal()
+          setinpuntMessage("")
+          setdateSelected(null);
         });
       }
   
      
 
-       
+      // console.log(firebaseTimestamp.toDate())       
       const UploadNote=()=>{
+
 
         firestore().collection('Users').doc(auth().currentUser?.email as any).collection("Citas").add({
             Hour:new Date(dateSelected!).getHours(),
@@ -67,7 +82,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
             message:inpuntMessage,
             notification:isEnabled,
             day:paramsDay,
-            date:timestamp
+            date:firebaseTimestamp
       
           })
           .then(() => {
@@ -94,8 +109,6 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
       
   
   {/* bacround negro */}
-  <Animatable.View duration={1000} animation="fadeInDown" style={{flex:1}} >
-
 
   <View style={{
       flex:1,
@@ -126,7 +139,8 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
                 
                 hora ?
                 <View>
-                      <Text>{dateSelected? new Date(dateSelected!).getHours()
+                    
+                      <Text style={{fontWeight:"500",fontSize:25}} > <Text>Hora: </Text>{dateSelected? <Text> {new Date(dateSelected!).getHours()}:<Text>{new Date(dateSelected!).getMinutes()} </Text> </Text>    
                       :<Text>{hora}:{minute}</Text>}</Text>
                 </View>
            
@@ -208,7 +222,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
                </TouchableOpacity>
               
              
-              <TouchableOpacity  onPress={()=>{type =="subir"&& UploadNote()}} >
+              <TouchableOpacity  onPress={()=>{type =="subir"? UploadNote() :update()}} >
                   <Text style={{fontSize:20}} >{botonName??"Actualizar"}</Text>  
               </TouchableOpacity>
 
@@ -219,7 +233,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
       
 
   </View>
-  </Animatable.View>
+ 
     </Modal>
   )
 }

@@ -12,7 +12,11 @@ const Drawer=createDrawerNavigator()
 export const NavigationInto=()=>{
     return(
         <NavigationContainer>
-       <Drawer.Navigator>
+       <Drawer.Navigator
+       screenOptions={{
+        headerShown:false
+       }}
+       >
          <Drawer.Screen name="CalendarioScreen" component={CalendarioScreen} />
          <Drawer.Screen name="ChoseTemplate" component={ChoseTemplate} />
          <Drawer.Screen name="DaySelected" component={DaySelected} />  

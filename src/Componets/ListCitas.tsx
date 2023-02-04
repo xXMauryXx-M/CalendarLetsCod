@@ -1,66 +1,71 @@
-import React,{useState} from 'react'
-import { View, Text, TouchableOpacity, useWindowDimensions, StyleSheet, Alert } from 'react-native';
+import React,{useState,useEffect} from 'react'
+import { View, Text, TouchableOpacity, useWindowDimensions, StyleSheet, Alert,ScrollView } from 'react-native';
 import { ModalAppointment } from './ModalAppointment';
-
 import { AppointmentDataFirebase } from './ShowTask';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-
+import Icon from 'react-native-vector-icons/Ionicons';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 export const ListCitas = ({ infoCitas }: { infoCitas: AppointmentDataFirebase }) => {
-  console.log(infoCitas.key)
   const [isModalVisible, setModalVisible] = useState(false); 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const {width}= useWindowDimensions()
 
-  const eliminarCita=(key:string)=>{
-    
+  const eliminarCita=(key:string, isChecked:boolean)=>{
+  isChecked&&
 firestore().collection('Users')
 .doc(auth().currentUser?.email as any).collection("Citas").doc(key)
 .delete()
 .then(() => {
   console.log('User deleted!');
-});
+})
+
+
+
   }
 
-  
-  const showAlert=(infocitas:AppointmentDataFirebase)=>{
-    Alert.alert(
-        "Borrar Cita",
-       `Estas seguro que quieres borrar la cita con la hora ${infocitas.Hour}:${infoCitas.minute} `,
-        [
-            {
-                text:"cancelar",
-                onPress:()=>console.log("cancel presses"),
-                style:"cancel"
-                
-            },
-            {text:"delete",  onPress:()=>eliminarCita(infoCitas.key) }
-        ]
-        ,{
-            //puedes hacer click afuera para cerrarlo 
-            cancelable:true,
-            onDismiss:()=>console.log("onDesmiss")
+  useEffect(() => {
     
-        }
-    )
-        }
+  }, [])
+  
+
+  
+
+        
 
     return (
-    <View style={{flex:1}} >
+    <View style={{flex:1, }} >
+         
           <TouchableOpacity
               activeOpacity={0.9}
-              onPress={()=>toggleModal()}
-              onLongPress={()=>showAlert(infoCitas)}
+              onPress={()=>toggleModal()}   
               style={[styles.bottomAdd,{ width:width/1.2}]}                            
         >
+        
             <View style={styles.container}>
+            <BouncyCheckbox
+              style={{position:"absolute",top:30,left:10}}
+              size={25}
+              fillColor="black"
+              unfillColor="#FFFFFF"
+              bounceEffectIn={0.7}
+              text={infoCitas.message}
+              iconStyle={{ borderColor: "white" }}
+              innerIconStyle={{ borderWidth: 2 }}
+              textStyle={{ fontFamily: "JosefinSans-Regular",marginTop:15,fontSize:18 }}
+              onPress={(isChecked: boolean) => {eliminarCita(infoCitas.key,isChecked)}}
+/>
                 <Text style={styles.title}>{infoCitas.Hour}:{infoCitas.minute}</Text>
-                <Text style={styles.subtitle}>{infoCitas.message}</Text>
+             
             </View>
         </TouchableOpacity>  
+        <TouchableOpacity onPress={()=>Alert.alert("borrar cita"+infoCitas.key)} style={{position:"absolute",right:70,top:50}} >
+      
 
+        </TouchableOpacity>
+ 
           <ModalAppointment 
              isModalVisible={isModalVisible}
              toggleModal={toggleModal}
@@ -69,7 +74,11 @@ firestore().collection('Users')
              message={infoCitas.message}
              minute={infoCitas.minute}
              type={"actualizar"}
+             doc={infoCitas.key}
+            
           />
+
+
      
     </View>
   )
@@ -93,16 +102,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 8
+    fontSize: 22,
+    marginBottom: 18,
+    marginHorizontal:30,
+    
   },
   subtitle: {
-    fontSize: 14,
-    color: 'gray'
+    fontSize: 20,
+    color: 'gray',
+    marginHorizontal:30
   },
   bottomAdd:{
     padding:20,
     alignSelf:"center", 
+    fontSize:20
 
   }
 });

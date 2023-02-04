@@ -4,9 +4,9 @@ import  Icon  from "react-native-vector-icons/Ionicons"
 import { useNavigation } from '@react-navigation/native';
 import { ShowTask } from "../Componets/ShowTask";
 import { ModalAppointment } from "../Componets/ModalAppointment";
-export const DaySelected=(day:any)=>{
-   const paramsDay:string=day.route.params.day
-console.log(paramsDay)
+export const DaySelected=(dia:any)=>{
+   const paramsDay=dia.route.params.day
+console.log( typeof( paramsDay))
     const navigation= useNavigation()
     const [isModalVisible, setModalVisible] = useState(false);
     const toggleModal = () => {
@@ -15,24 +15,25 @@ console.log(paramsDay)
     
 
     return(
-        <View style={{flex:1,backgroundColor:"white"}} >
+        <View style={{flex:1, backgroundColor:"rgba(42, 159, 211, 0.9)"}} >
               <Icon
                  onPress={()=>navigation.goBack()}
-                 color={"black"} name="chevron-back-outline" size={30} 
+                 color={"white"} name="chevron-back-outline" size={40} 
+                 style={{marginTop:20}}
                 /> 
              
             
          
            
                 {/* muestra las citas */}
-                <ShowTask
+                 <ShowTask
                  daySelected={paramsDay} 
-                />  
+                />   
                 {/* modal */}
                 <ModalAppointment
-                paramsDay={paramsDay}
                 isModalVisible={isModalVisible}
                 toggleModal={toggleModal}
+                paramsDay={paramsDay}
                 title={"cita"}
                  botonName={"Aceptar"}
                  type={"subir"}
