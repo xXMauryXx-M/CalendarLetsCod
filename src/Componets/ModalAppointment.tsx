@@ -22,13 +22,11 @@ interface ModalOpenClose{
 }
 
 export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,message,hora, botonName,minute,type,doc}:ModalOpenClose) => {    
-
-
-
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [inpuntMessage, setinpuntMessage] = useState(message)
     const [dateSelected, setdateSelected] = useState<Date|null>()
     const [isEnabled, setIsEnabled] = useState(false);
+    const [choseColor,setChosecolor] = useState("#2A0D53");
    
 
     const mes = new Date().getMonth()
@@ -65,7 +63,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
         })
         .then(() => {
           toggleModal()
-          setinpuntMessage("")
+         setinpuntMessage("")
           setdateSelected(null);
         });
       }
@@ -82,18 +80,22 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
             message:inpuntMessage,
             notification:isEnabled,
             day:paramsDay,
-            date:firebaseTimestamp
+            date:firebaseTimestamp,
+            color:choseColor
       
           })
           .then(() => {
            toggleModal()
-           setinpuntMessage("")
+          setinpuntMessage("")
            setdateSelected(null);
-          });
+          }).catch(()=>{
+            Alert.alert("Error al subir la nota")
+          })
 
       }
     return (
     <Modal
+    style={{backgroundColor:"#2A0D53"}}
      animationType='fade'
      visible={isModalVisible}
      transparent={true}
@@ -121,8 +123,9 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
      {/* contenido del modal */}
 
       <View style={{
+           
           borderRadius:10,
-          backgroundColor:"white",
+          backgroundColor:choseColor,
           width:340,
           height:420,
           justifyContent:"center",
@@ -130,7 +133,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
           }} >
 
        
-          <Text style={{color:"black",fontSize:25,alignSelf:"center",position:"absolute",top:0,marginTop:20}} >{title?? "por defecto"}</Text>
+          <Text style={{color:"white",fontSize:25,alignSelf:"center",position:"absolute",top:0,marginTop:20}} >{title?? "por defecto"}</Text>
             
             <View style={{marginTop:"10%", marginLeft:20}} >
               <TouchableOpacity onPress={showDatePicker} >
@@ -140,8 +143,8 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
                 hora ?
                 <View>
                     
-                      <Text style={{fontWeight:"500",fontSize:25}} > <Text>Hora: </Text>{dateSelected? <Text> {new Date(dateSelected!).getHours()}:<Text>{new Date(dateSelected!).getMinutes()} </Text> </Text>    
-                      :<Text>{hora}:{minute}</Text>}</Text>
+                      <Text style={{fontWeight:"500",fontSize:25,color:"white"}} > <Text style={{color:"white"}} >Hora: </Text>{dateSelected? <Text> {new Date(dateSelected!).getHours()}:<Text>{new Date(dateSelected!).getMinutes()} </Text> </Text>    
+                      :<Text style={{color:"white"}} >{hora}:{minute}</Text>}</Text>
                 </View>
            
                 
@@ -150,14 +153,14 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
                      
 
                  <View>
-                  <Text>Hora</Text>
-                 <Text style={{fontWeight:"500",fontSize:25}} >
+                  <Text style={{color:"white"}} >Hora</Text>
+                 <Text style={{fontWeight:"500",fontSize:25,color:"white"}} >
                   {new Date(dateSelected!).getHours()}:
-                  <Text style={{fontWeight:"500",fontSize:25}} >{new Date(dateSelected!).getMinutes()}</Text></Text>
+                  <Text style={{fontWeight:"500",fontSize:25,color:"white"}} >{new Date(dateSelected!).getMinutes()}</Text></Text>
                   
                  </View> 
                   
-                  :<Text style={{fontWeight:"500",fontSize:20}} >Select Hour</Text>
+                  :<Text style={{fontWeight:"500",fontSize:20,color:"white"}} >Select Hour</Text>
                  
              
                
@@ -194,13 +197,37 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
     </View>
 
     <View style={{marginRight:20}} >
-     
-    <Text style={{textAlign:"right",marginTop:10}} >Do you want to active notification? </Text>
+   
+     <View style={{flexDirection:"row",marginTop:10,alignSelf:"center"}} >
+    
+    <TouchableOpacity onPress={()=>setChosecolor("orange")} style={{backgroundColor:"orange",width:20,height:20,borderRadius:10,marginLeft:10}} >
+      <View style={{backgroundColor:"red"}} ></View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={()=>setChosecolor("#5B2AAF")} style={{backgroundColor:"#5B2AAF",width:20,height:20,borderRadius:10,marginLeft:10}} >
+      <View style={{backgroundColor:"red"}} ></View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={()=>setChosecolor("#1ABEED")} style={{backgroundColor:"#1ABEED",width:20,height:20,borderRadius:10,marginLeft:10}} >
+      <View style={{backgroundColor:"red"}} ></View>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={()=>setChosecolor("red")} style={{backgroundColor:"red",width:20,height:20,borderRadius:10,marginLeft:10}} >
+      <View style={{backgroundColor:"red"}} ></View>
+    </TouchableOpacity>
+
+    <TouchableOpacity  onPress={()=>setChosecolor("#F6819F")} style={{backgroundColor:"#F6819F",width:20,height:20,borderRadius:10,marginLeft:10}} >
+      <View style={{backgroundColor:"red"}} ></View>
+    </TouchableOpacity>
+     </View>
+   
+
       <View style={{marginTop:15}} >
+      <Text style={{textAlign:"right",marginTop:10,color:"white"}} >Active notification? </Text> 
            
       <Switch
-        trackColor={{false: '#767577', true: '#81b0ff'}}
-        thumbColor={true ? '#f5dd4b' : '#f4f3f4'}
+        trackColor={{false: '#767577', true: 'black'}}
+        thumbColor={true ? 'white' : '#f4f3f4'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
         value={isEnabled}
@@ -218,12 +245,12 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
             <View style={{flexDirection:"row",justifyContent:"space-around",marginTop:"30%"}} >
              
                <TouchableOpacity onPress={()=>toggleModal()} >
-                    <Text style={{fontSize:20}} >Cancelar  </Text>  
+                    <Text style={{fontSize:20,color:"white"}} >Cancelar  </Text>  
                </TouchableOpacity>
               
              
               <TouchableOpacity  onPress={()=>{type =="subir"? UploadNote() :update()}} >
-                  <Text style={{fontSize:20}} >{botonName??"Actualizar"}</Text>  
+                  <Text style={{fontSize:20,color:"white"}} >{botonName??"Actualizar"}</Text>  
               </TouchableOpacity>
 
             </View>

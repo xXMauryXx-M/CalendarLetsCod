@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react"
-import { View, Text, FlatList, StyleSheet} from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {ListCitas} from './ListCitas';
@@ -8,22 +8,29 @@ export interface AppointmentDataFirebase {
     startTime?: string;
     endTime?: string;
     description?: string;
-    key:string;
+    key?:string;
     day?:string
     message?:string,
     minute?:string,
     notification?:boolean,
     date?:any,
-    Hour?:string
+    Hour?:string,
+    color:String
   }
 
 export const ShowTask=({daySelected}:any)=>{
+ 
+console.log("showtask",daySelected)
+  
     const [appointmentData, setrtappointmentData] = useState<AppointmentDataFirebase[]>([])  
+    const [isLoading, setisLoading] = useState<boolean>(true)  
+   
     useEffect(() => {
+    
         loadappointment();
     },[])
     const loadappointment=()=>{
-        const suscriber=  firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").orderBy("date","asc"). onSnapshot(querySnapshot=>{
+        const suscriber=  firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").where("day","==",daySelected).onSnapshot(querySnapshot=>{
             const appointment:AppointmentDataFirebase[]=[]
             querySnapshot.forEach(documentSnapshot=>{
                 appointment.push({
@@ -36,25 +43,29 @@ export const ShowTask=({daySelected}:any)=>{
                     minute:documentSnapshot.data().minute,
                     notification:documentSnapshot.data().notification,
                     date:documentSnapshot.data().date,
-                    Hour:documentSnapshot.data().Hour
-                    
+                    Hour:documentSnapshot.data().Hour,
+                    color:documentSnapshot.data().color
 
                 })
             })
-    
+       
             setrtappointmentData(appointment)      
+            setisLoading(false)
         })
         return ()=>suscriber()
 }
- const citasEnFechaSeleccionada = appointmentData.filter(cita=>cita.day==daySelected)
-    
+
     return(
         < >
          {/* <Text style={{position:"absolute",top:0}} >Atras</Text> */}
             {
-                    citasEnFechaSeleccionada.length >0 ?
+                isLoading?
+                <ActivityIndicator  size={50} color={"white"}  style={{marginTop:"30%"}} />
+
+                :
+                    appointmentData.length >0 ?
                     <FlatList 
-                    data={citasEnFechaSeleccionada}
+                    data={appointmentData}
                     renderItem={({item})=> <ListCitas infoCitas={item} />}
                     /> 
                     :
@@ -65,7 +76,7 @@ export const ShowTask=({daySelected}:any)=>{
                         size={50} 
                         style={{alignSelf:"center",color:"white"}} />
                      </View>
-
+ 
             }
           
     </>

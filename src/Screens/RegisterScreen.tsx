@@ -113,7 +113,7 @@ const Navigation = useNavigation<any>()
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=>Navigation.navigate("LoginScreen")} >
-       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}>  don`t you have any count?</Text>
+       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}> Login</Text>
    </TouchableOpacity>
    </View>   
 

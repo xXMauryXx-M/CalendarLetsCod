@@ -17,7 +17,7 @@ export const NavigationOut=()=>{
          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
    
      </Stack.Navigator>
-        </NavigationContainer>
+        </NavigationContainer> 
        
     )
 }

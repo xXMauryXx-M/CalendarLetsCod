@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@notifee/react-native": "^7.4.0",
     "@react-native-community/datetimepicker": "^6.7.2",
     "@react-native-firebase/app": "^16.5.0",
     "@react-native-firebase/auth": "^16.5.0",
@@ -25,6 +26,7 @@
     "react-native-bouncy-checkbox": "^3.0.6",
     "react-native-calendars": "^1.1293.0",
     "react-native-gesture-handler": "^2.9.0",
+    "react-native-image-picker": "^5.0.1",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^14.0.1",
     "react-native-paper": "^5.1.3",

@@ -18,6 +18,8 @@ const navigation=useNavigation<any>()
     }).catch((error)=>{
          if(error.code=="auth/email-already-in-use"){
             Alert.alert("Email ya ha sido registrado")
+         }else{
+           console.log(error)
          }
     })
     
@@ -97,7 +99,7 @@ const navigation=useNavigation<any>()
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=>navigation.navigate("RegisterScreen")} >
-       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}>  don`t you have any count?</Text>
+       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}>Registro</Text>
    </TouchableOpacity>
 
        
