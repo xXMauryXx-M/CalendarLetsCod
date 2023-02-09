@@ -26,9 +26,6 @@ firestore().collection('Users')
 
   }
 
-  useEffect(() => {
-    
-  }, [])
   
 
   

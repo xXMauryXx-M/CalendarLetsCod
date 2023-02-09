@@ -25,14 +25,14 @@ console.log("showtask",daySelected)
     const [appointmentData, setrtappointmentData] = useState<AppointmentDataFirebase[]>([])  
     const [isLoading, setisLoading] = useState<boolean>(true)  
    
-    useEffect(() => {
-    
+    useEffect(() => {    
         loadappointment();
     },[])
     const loadappointment=()=>{
         const suscriber=  firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").where("day","==",daySelected).onSnapshot(querySnapshot=>{
             const appointment:AppointmentDataFirebase[]=[]
             querySnapshot.forEach(documentSnapshot=>{
+                
                 appointment.push({
                     startTime: documentSnapshot.data().startTime,
                     endTime: documentSnapshot.data().endTime,
@@ -54,6 +54,11 @@ console.log("showtask",daySelected)
         })
         return ()=>suscriber()
 }
+
+const ordenar=()=>{
+
+}
+
 
     return(
         < >

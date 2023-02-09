@@ -2,7 +2,8 @@
  * respositorio
  * modalAppiment mas rapido
  * Loading en Upcomign event
- * ordernar citas 
+ * ordernar citas por hora en upcomign evet
+ * ordenar citas en dayselected por hora 
  */
 import React,{useState,useEffect} from "react"
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
@@ -179,7 +180,7 @@ const style=StyleSheet.create({
    calendarBackground: '#ffffff ',
    textSectionTitleColor: 'white',
    textSectionTitleDisabledColor: 'red',
-   selectedDayBackgroundColor: '#0AC4F4',
+   selectedDayBackgroundColor: '#F6819F',
    selectedDayTextColor: 'white',
    todayTextColor: 'white',
    dayTextColor: 'white',   

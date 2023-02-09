@@ -12,33 +12,30 @@ interface Props{
   nameIcon:string
   value:any
   type:any
-errors?:any
-placeholder:any
-focus:any
+  errors?:any
+  placeholder:any
+  focus:any
+  show?:boolean
 }
 
-export const TexCustomInput = ({name, focus, handleBlur, type, value, values, handleChange, nameIcon,errors,placeholder} :Props) => {
+export const TexCustomInput = ({name, focus, handleBlur, type, value, values, handleChange, nameIcon,errors,placeholder,show} :Props) => {
+  
   return (
          <View style={{flexDirection:"row", alignItems:"center",backgroundColor:"#faF4F9", paddingHorizontal:5, marginHorizontal:15}} >
-         <Icon style={{  color:"grey", alignItems:"center", justifyContent:"center", paddingHorizontal:7}} name={nameIcon} size={23} color="white" />
-        
-          {/* verf el foco */}
-                                            
+         <Icon style={{color:"grey", alignItems:"center", justifyContent:"center", paddingHorizontal:7}} name={nameIcon} size={23} color="white" />                                  
                  <TextInput
-                
+                 secureTextEntry={show}
                  focusable={true}
                  blurOnSubmit={false}
                  autoFocus={focus}
                  autoCorrect={false}
-                 //para aumentar la altura del plce holder es el fontsize
-                style={{ flex:1, fontWeight:"600", borderColor:"#faF4F9", borderWidth:5, backgroundColor:"#faF4F9", fontSize:20, color:"black" , padding:10, borderRadius:10 ,shadowColor: "#000",
-              }}
+                 style={{ flex:1, fontWeight:"600", borderColor:"#faF4F9", borderWidth:5, backgroundColor:"#faF4F9", fontSize:20, color:"black" , padding:10, borderRadius:10 ,shadowColor: "#000", }}
                  placeholder={placeholder}
-                 
                  keyboardType={type}
                  onBlur={handleBlur(name)}
                  value={values}
                  onChangeText={handleChange(name)}
+                 
            />
          </View>
 

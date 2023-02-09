@@ -13,13 +13,13 @@ const navigation=useNavigation<any>()
     
     auth().signInWithEmailAndPassword(email,Password).
     then(()=>{
-     Alert.alert("Usuario Creado")
+     Alert.alert("Usuario iniciando Correctamente")
        
     }).catch((error)=>{
          if(error.code=="auth/email-already-in-use"){
             Alert.alert("Email ya ha sido registrado")
          }else{
-           console.log(error)
+       Alert.alert("Error usuario No encontrado")
          }
     })
     
@@ -29,7 +29,7 @@ const navigation=useNavigation<any>()
   return (
     <View style={styles.container} >    
        <Text style={[styles.LoginTitle]} >Hello</Text>
-       <Text style={{fontSize:20, alignSelf:"center",fontWeight:"700",marginBottom:40}} >Sign in to your Account</Text>
+       <Text style={{fontSize:20, alignSelf:"center",fontWeight:"700",marginBottom:40,color:"white"}} >Sign in to your Account</Text>
       
       <View>
     
@@ -99,7 +99,7 @@ const navigation=useNavigation<any>()
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=>navigation.navigate("RegisterScreen")} >
-       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}>Registro</Text>
+       <Text style={{color:"white",alignSelf:"center",fontSize:20,marginTop:20}}>Registro</Text>
    </TouchableOpacity>
 
        
@@ -118,13 +118,14 @@ const styles = StyleSheet.create({
     
     container:{
         flex:1,
-        backgroundColor:"white",
-        justifyContent:"center"
+        backgroundColor:"#2A0D53",
+        justifyContent:"center",
+        
     },
     LoginTitle:{
         fontSize:45,
         fontWeight:"900",
-        color:"#000",
+        color:"white",
         marginTop:40,
         alignItems:"center",
 

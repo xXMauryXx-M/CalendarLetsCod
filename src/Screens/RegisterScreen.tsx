@@ -1,6 +1,6 @@
 import React from "react"
 import { ErrorMessage, Formik } from "formik";
-import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Alert, TextInput } from 'react-native';
 import * as Yup from 'yup';
 import { TexCustomInput } from "../Componets/TexCustomInput";
 import auth from '@react-native-firebase/auth';
@@ -49,6 +49,7 @@ const Navigation = useNavigation<any>()
    <>
 
         <TexCustomInput
+        
            focus={false}
            placeholder="Nombre"
            errors={errors}
@@ -69,7 +70,7 @@ const Navigation = useNavigation<any>()
 
            <TexCustomInput
            focus={false}
-           placeholder="Email-address"
+           placeholder="Correo Electronico"
            errors={errors}
            type="email-address"
            value={values.email}
@@ -92,15 +93,16 @@ const Navigation = useNavigation<any>()
            handleBlur={handleBlur}
            nameIcon="lock-closed"
            handleChange={handleChange}
-           values={values.password} />
+           values={values.password} 
+          
+           />
 
            <Text style={styles.ErrorMessage}>
                 <ErrorMessage name="password" />
            </Text>
 
 
-
-
+         
 
 
     <View>
@@ -113,7 +115,7 @@ const Navigation = useNavigation<any>()
         </TouchableOpacity>
 
         <TouchableOpacity onPress={()=>Navigation.navigate("LoginScreen")} >
-       <Text style={{color:"grey",alignSelf:"center",fontSize:15,marginTop:20}}> Login</Text>
+       <Text style={{color:"white",alignSelf:"center",fontSize:20,marginTop:20}}> Login</Text>
    </TouchableOpacity>
    </View>   
 
@@ -130,13 +132,13 @@ const styles = StyleSheet.create({
     
     container:{
         flex:1,
-        backgroundColor:"white",
+        backgroundColor:"#2A0D53",
         justifyContent:"center"
     },
     LoginTitle:{
         fontSize:45,
         fontWeight:"900",
-        color:"#000",
+        color:"white",
         marginTop:40,
         alignItems:"center",
         marginVertical:30,

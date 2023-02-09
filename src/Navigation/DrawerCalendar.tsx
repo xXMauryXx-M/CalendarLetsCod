@@ -15,7 +15,7 @@ export const DrawerCalendar=()=>{
         screenOptions={
         {
            headerShown:false,    
-           drawerActiveTintColor:"#2A0D53",
+           drawerActiveTintColor:"white",
            drawerInactiveTintColor:"grey" ,    
         }
       }
