@@ -1,37 +1,34 @@
 import React,{useState} from 'react'
-import { View, Text, Modal, TextInput, TouchableOpacity, Switch, Alert } from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, Switch, Alert, ActivityIndicator } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import * as Animatable from 'react-native-animatable';
-import { DaySelected } from '../Screens/DaySelected';
-
-
 interface ModalOpenClose{
     isModalVisible:boolean,
     toggleModal: () => void,
     paramsDay?:any,
     title?:string,
-    hora?:string,
+    HourAndMinute?:string
     message?:string
     botonName?:string,
-    minute?:string
     type?:string
     doc?:string
    
 }
-
-export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,message,hora, botonName,minute,type,doc}:ModalOpenClose) => {    
+export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,message, botonName,type,doc,HourAndMinute}:ModalOpenClose) => {    
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [inpuntMessage, setinpuntMessage] = useState(message)
     const [dateSelected, setdateSelected] = useState<Date|null>()
     const [isEnabled, setIsEnabled] = useState(false);
     const [choseColor,setChosecolor] = useState("#2A0D53");
-   
-
+    const [isLoading, setIsLoading] = useState(false);
     const mes = new Date().getMonth()
     const spesificDate = new Date(2023,mes,paramsDay??0);
-    const firebaseTimestamp = firestore.Timestamp.fromDate ( new Date(spesificDate))
+    const firebaseTimestamp = firestore.Timestamp.fromDate (new Date(spesificDate))
+    let  hour = HourAndMinute?.split(':')[0];
+    let minute = HourAndMinute?.split(':')[1];
+
+    let horaminute= new Date(dateSelected!).getHours()+ ":" +new Date(dateSelected!).getMinutes()
     // const firebaseTimestamp = firestore.Timestamp.fromDate(spesificDate)
     
 
@@ -43,6 +40,7 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
         setDatePickerVisibility(!isDatePickerVisible);
       };
     const handleConfirm = (date:any) => {
+      console.log(date)
         setdateSelected(date)
         hideDatePicker();
       };
@@ -50,19 +48,20 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
       
         
       const update=()=>{
+        setIsLoading(true)
         firestore()
         .collection('Users')   
         .doc(auth().currentUser?.email as any)
         .collection("Citas").
         doc(doc)
-        .update({
-
-          Hour:new Date(dateSelected!).getHours(),
-          minute: new Date(dateSelected!).getMinutes(),
+        .update({         
+          HourAndMinute:horaminute,
           message:inpuntMessage,   
+          color:choseColor
         })
         .then(() => {
           toggleModal()
+          setIsLoading(false)
          setinpuntMessage("")
           setdateSelected(null);
         });
@@ -71,27 +70,38 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
      
 
       // console.log(firebaseTimestamp.toDate())       
-      const UploadNote=()=>{
+      const UploadNote=async()=>{
+        setIsLoading(true)
+try {
 
+  await firestore().collection('Users').doc(auth().currentUser?.email as any).collection("Citas").add({
+    HourAndMinute:horaminute,
+    message:inpuntMessage,
+    notification:isEnabled,
+    day:paramsDay,
+    date:firebaseTimestamp,
+    color:choseColor
+  })
+  .then(() => {
+   toggleModal()
+   setIsLoading(!isLoading)
+   setinpuntMessage("")
+   setdateSelected(null);
+  
+  }).catch(()=>{
+    Alert.alert("Error al subir la nota")
+  setIsLoading(!isLoading)
+  })
+} catch (error:any) {
+  Alert.alert(error)
+  setIsLoading(!isLoading)
+}
+        
 
-        firestore().collection('Users').doc(auth().currentUser?.email as any).collection("Citas").add({
-            Hour:new Date(dateSelected!).getHours(),
-            minute: new Date(dateSelected!).getMinutes(),
-            message:inpuntMessage,
-            notification:isEnabled,
-            day:paramsDay,
-            date:firebaseTimestamp,
-            color:choseColor
-      
-          })
-          .then(() => {
-           toggleModal()
-          setinpuntMessage("")
-           setdateSelected(null);
-          }).catch(()=>{
-            Alert.alert("Error al subir la nota")
-          })
+      }
 
+      if(isLoading){
+        return <Text></Text>;
       }
     return (
     <Modal
@@ -140,11 +150,11 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
 
                 {   
                 
-                hora ?
+                hour ?
                 <View>
                     
                       <Text style={{fontWeight:"500",fontSize:25,color:"white"}} > <Text style={{color:"white"}} >Hora: </Text>{dateSelected? <Text> {new Date(dateSelected!).getHours()}:<Text>{new Date(dateSelected!).getMinutes()} </Text> </Text>    
-                      :<Text style={{color:"white"}} >{hora}:{minute}</Text>}</Text>
+                      :<Text style={{color:"white"}} >{hour}:{minute}</Text>}</Text>
                 </View>
            
                 
@@ -155,8 +165,8 @@ export const ModalAppointment = ({isModalVisible,toggleModal,paramsDay,title,mes
                  <View>
                   <Text style={{color:"white"}} >Hora</Text>
                  <Text style={{fontWeight:"500",fontSize:25,color:"white"}} >
-                  {new Date(dateSelected!).getHours()}:
-                  <Text style={{fontWeight:"500",fontSize:25,color:"white"}} >{new Date(dateSelected!).getMinutes()}</Text></Text>
+                  {new Date(dateSelected).getHours()}:
+                  <Text style={{fontWeight:"500",fontSize:25,color:"white"}} >{new Date(dateSelected).getMinutes()}</Text></Text>
                   
                  </View> 
                   

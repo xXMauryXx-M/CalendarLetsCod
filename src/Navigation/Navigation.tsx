@@ -13,7 +13,7 @@ export const NavigationInto=()=>{
             <stack.Navigator
             screenOptions={{
                 headerShown:false,
-                  headerTintColor:"#2A0D53"
+                 
             }}
             >
                 <stack.Screen name="DrawerCalendar" component={DrawerCalendar} />

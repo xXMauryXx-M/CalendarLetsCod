@@ -48,13 +48,13 @@ firestore().collection('Users')
             fillColor="#2A0D53"
             unfillColor="#FFFFFF"
             bounceEffectIn={0.7}
-            text={infoCitas.message}
+            text={infoCitas.message!.length>10 ? infoCitas.message?.substring(0,8) + "..." :infoCitas.message}
             iconStyle={{ borderColor: "blue" }}
            
             textStyle={{ fontFamily: "JosefinSans-Regular",marginTop:0,fontSize:18,color:"white" }}
               onPress={(isChecked: boolean) => {eliminarCita(infoCitas.key as any,isChecked)}}
 />
-<Text style={{color:"white",position:"absolute",right:13,bottom:22,fontSize:20,fontWeight:"bold"}}>{infoCitas.Hour}:{infoCitas.minute} PM</Text> 
+<Text style={{color:"white",position:"absolute",right:13,bottom:22,fontSize:20,fontWeight:"bold"}}>{infoCitas.HourAndMinute}</Text> 
              
             </View>
         </TouchableOpacity>  
@@ -67,9 +67,9 @@ firestore().collection('Users')
              isModalVisible={isModalVisible}
              toggleModal={toggleModal}
              title={"Actualizacion"}
-             hora={infoCitas.Hour}
+             HourAndMinute={infoCitas.HourAndMinute}
              message={infoCitas.message}
-             minute={infoCitas.minute}
+           
              type={"actualizar"}
              doc={infoCitas.key}
             

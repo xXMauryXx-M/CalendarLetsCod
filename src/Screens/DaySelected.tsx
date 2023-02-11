@@ -21,7 +21,7 @@ console.log( typeof( paramsDay))
                  color={"white"} name="chevron-back-outline" size={40} 
                  style={{marginTop:20}}
                 /> 
-                 <Text style={{fontSize:25,alignSelf:"center",color:"white",fontWeight:"bold",marginBottom:20,}} >14 Septiembre</Text>
+                 <Text style={{fontSize:25,alignSelf:"center",color:"white",fontWeight:"bold",marginBottom:20,}} > Dia: {paramsDay}</Text>
             
          
            

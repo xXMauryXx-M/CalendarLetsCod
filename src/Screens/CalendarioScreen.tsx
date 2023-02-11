@@ -1,24 +1,14 @@
-/*** 
- * respositorio
- * modalAppiment mas rapido
- * Loading en Upcomign event
- * ordernar citas por hora en upcomign evet
- * ordenar citas en dayselected por hora 
- */
+
 import React,{useState,useEffect} from "react"
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { Calendar, LocaleConfig } from "react-native-calendars"
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { FlatList } from "react-native-gesture-handler";
 import { AppointmentDataFirebase } from "../Componets/ShowTask";
 import notifee from '@notifee/react-native';
 import { UpCommingEvent } from "../Componets/UpCommingEvent";
-
-
-
 LocaleConfig.locales['fr'] = {
   monthNames: [
     'Enero',
@@ -40,19 +30,17 @@ LocaleConfig.locales['fr'] = {
   today: "Aujourd'hui"
 };
 LocaleConfig.defaultLocale = 'fr';
-
 export const CalendarioScreen=()=>{
     const navigation=useNavigation<any>()
     const [markedDatesd, setMarkedDates] = useState<any>();
     const[upEvent,setupEvent]=useState<AppointmentDataFirebase[]>([])
     const[isLoading,setisLoading]=useState<boolean>(true)
-    const fechaAcutal=new Date()
-    let fechaAhora=` ${fechaAcutal.getFullYear()} ${fechaAcutal.getMonth()+1} ${fechaAcutal.getDate()}`
+    const {width,height}=useWindowDimensions()
     useEffect(() => {
-      getMarkedDates()
-      getUpcomminEvets()  
+       getMarkedDatesAndDay()
+       getUpcomminEvets()  
     }, [])
-const getMarkedDates =  () => {
+const getMarkedDatesAndDay =  () => {
    const unsubscribe = firestore().collection("Users").doc(auth().currentUser?.email as any).collection("Citas").onSnapshot(querySnapshot => {
     let newMarkedDates: { [date: string]: any } = {};
       querySnapshot.forEach((doc) => {
@@ -80,11 +68,10 @@ const getUpcomminEvets=()=>{
         event.push({
          day:documentSnapshot.data().day,
          message:documentSnapshot.data().message,
-         Hour:documentSnapshot.data().Hour,
          key:documentSnapshot.data().key,
-         minute:documentSnapshot.data().minute,
          date:documentSnapshot.data().date,
-         color:documentSnapshot.data().color
+         color:documentSnapshot.data().color,
+         HourAndMinute:documentSnapshot.data().HourAndMinute
         })
      })
 
@@ -121,30 +108,26 @@ const getUpcomminEvets=()=>{
   }
         return(
         <View style={style.container} >
-        <Icon onPress={()=>navigation.openDrawer()} name="reorder-three-sharp" size={40} color="white" style={{position:"absolute",top:10}} />
-        <Text style={{color:"white", alignSelf:"center", marginTop:80,fontSize:30,fontWeight:"700"}} >Calendar</Text>
+        <Icon onPress={()=>navigation.openDrawer()} name="reorder-three-sharp" size={45} color="white" style={{position:"absolute",top:height*0.02}} />
+        <Text style={[style.titleCalendar,{marginTop:height*0.1,}]} >Calendar</Text>
    {
           isLoading ? 
           <Loading />
           :  
           <>         
           <Calendar     
-              style={[style.calendario, {marginBottom:100,backgroundColor:"#2A0D53",marginHorizontal:20,borderRadius:10,height:400,marginTop:10,width:"90%",alignSelf:"center"}]}
+              style={[style.calendario,{  marginBottom:height*0.1,   height:height*0.5, marginTop:height*0.07}]}
               theme={style.AllCalendar}       
               onDayPress={(dia)=>{
                 navigation.navigate("DaySelected",dia.day)
               }}
-
               markedDates={markedDatesd}                
               monthFormat={'MMM 2023'}
           /> 
-
-
-<Text style={{fontSize:20,fontWeight:"600",color:"white",position:"absolute",bottom:170,marginLeft:20,marginBottom:7}} >Upcoming Events</Text>
-{/* <Text onPress={()=>onDisplayNotification()} >probar notification</Text> */}
-  <UpCommingEvent
-upEvent={upEvent}
-/>
+     <Text style={style.upcomingEventTitle} >Upcoming Events</Text>
+      <UpCommingEvent
+       upEvent={upEvent}
+      />
 
 </>        
 }
@@ -158,10 +141,13 @@ const style=StyleSheet.create({
     container:{
         flex:1,
          justifyContent:"center",
-         marginHorizontal:0,
          backgroundColor:"#2A0D53"
-         
-    
+    },
+    titleCalendar:{
+      color:"white", 
+      alignSelf:"center", 
+      fontSize:30,
+      fontWeight:"700"
     },
     calendario:{
       fontWeight:"bold",
@@ -173,33 +159,52 @@ const style=StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom: 16
+    backgroundColor:"#2A0D53",
+    marginHorizontal:20,
+    borderRadius:10,
+    width:"90%",
+    alignSelf:"center"
   },
-  AllCalendar:{
+    AllCalendar:{
     backgroundColor: '#ffffff',
-   calendarBackground: '#ffffff ',
-   textSectionTitleColor: 'white',
-   textSectionTitleDisabledColor: 'red',
-   selectedDayBackgroundColor: '#F6819F',
-   selectedDayTextColor: 'white',
-   todayTextColor: 'white',
-   dayTextColor: 'white',   
-   textDisabledColor:'grey',
-   arrowColor: 'white',
-   disabledArrowColor: '#d9e1e8',
-   monthTextColor: 'white',
-   indicatorColor: 'white',
-   textDayFontFamily: 'monospace',
-   textMonthFontFamily: 'monospace',
-   textDayHeaderFontFamily: 'monospace',
-   textDayFontSize: 16,
-   textMonthFontSize: 25,
-   textDayHeaderFontSize: 16,
-   
- 
+    calendarBackground: '#ffffff ',
+    textSectionTitleColor: 'white',
+    textSectionTitleDisabledColor: 'red',
+    selectedDayBackgroundColor: '#F6819F',
+    selectedDayTextColor: 'white',
+    todayTextColor: 'white',
+    dayTextColor: 'white',   
+    textDisabledColor:'grey',
+    arrowColor: 'white',
+    disabledArrowColor: '#d9e1e8',
+    monthTextColor: 'white',
+    indicatorColor: 'white',
+    textDayFontFamily: 'monospace',
+    textMonthFontFamily: 'monospace',
+    textDayHeaderFontFamily: 'monospace',
+    textDayFontSize: 16,
+    textMonthFontSize: 25,
+    textDayHeaderFontSize: 16,
+  },
+  upcomingEventTitle:{
+    fontSize:20,
+    fontWeight:"600",
+    color:"white",
+    position:"absolute",
+    bottom:170,
+    marginLeft:20,
+    marginBottom:7
   }
     
 })
+
+/*** 
+ * respositorio
+ * modalAppiment mas rapido
+ * ordenar citas en dayselected por hora 
+ * agregar notificacion
+ * refactorizar punto importates
+ */
 
 
 export const Loading=()=>{
