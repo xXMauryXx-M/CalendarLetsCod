@@ -1,6 +1,6 @@
 
 import React,{useState,useEffect} from "react"
-import { View, StyleSheet, Text, ActivityIndicator, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, useWindowDimensions, Image } from 'react-native';
 import { Calendar, LocaleConfig } from "react-native-calendars"
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -36,6 +36,7 @@ export const CalendarioScreen=()=>{
     const[upEvent,setupEvent]=useState<AppointmentDataFirebase[]>([])
     const[isLoading,setisLoading]=useState<boolean>(true)
     const {width,height}=useWindowDimensions()
+    const [urlimageFireabse, seturlimageFireabse] = useState("")
     useEffect(() => {
        getMarkedDatesAndDay()
        getUpcomminEvets()  
@@ -59,6 +60,25 @@ const getMarkedDatesAndDay =  () => {
 
   })
 }
+
+
+useEffect(() => {
+    
+  
+  const suscriber= firestore().collection("PhotoUser").doc(auth().currentUser?.email as any).collection("url").orderBy('fechaHoraSubida', 'desc')
+  .limit(1).onSnapshot(snapshot=>{
+     snapshot.forEach((snap)=>{
+      console.log(snap)
+      seturlimageFireabse(snap.data().URL)
+ })
+   })
+ 
+   return ()=>suscriber()
+  }, [])
+
+  
+
+
 
 const getUpcomminEvets=()=>{
 
@@ -109,6 +129,9 @@ const getUpcomminEvets=()=>{
         return(
         <View style={style.container} >
         <Icon onPress={()=>navigation.openDrawer()} name="reorder-three-sharp" size={45} color="white" style={{position:"absolute",top:height*0.02}} />
+        <Image
+                            source={{uri: urlimageFireabse? urlimageFireabse: "https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png"}}
+                            style={{height:50,width:50,position:"absolute",top:15,right:10,borderRadius:20}}/>
         <Text style={[style.titleCalendar,{marginTop:height*0.1,}]} >Calendar</Text>
    {
           isLoading ? 
