@@ -8,6 +8,10 @@ export const NavigationInto=()=>{
  
     const stack=createStackNavigator()
 
+    const configuracion={
+      
+    }
+
     return(
         <NavigationContainer>
             <stack.Navigator
@@ -17,7 +21,21 @@ export const NavigationInto=()=>{
             }}
             >
                 <stack.Screen name="DrawerCalendar" component={DrawerCalendar} />
-                <stack.Screen name="DaySelected" component={DaySelected} />
+                <stack.Screen name="DaySelected" 
+                 options={{transitionSpec: {
+                 open: {
+                 animation: 'timing',
+                config: {
+                  duration: 500,
+                },
+               },
+                 close: {
+                  animation: 'timing',
+                  config: {
+                  duration: 400,
+          },  
+    },
+  },}}  component={DaySelected} />
                 <stack.Screen name="UpCommingEvent" component={UpCommingEvent} />
             </stack.Navigator>
         </NavigationContainer>

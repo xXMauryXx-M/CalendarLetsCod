@@ -1,4 +1,4 @@
-package com.calendar; //change your package name
+package com.calendarletscode; //change your package name
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

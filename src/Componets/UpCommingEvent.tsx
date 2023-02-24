@@ -23,7 +23,7 @@ export const UpCommingEvent=({upEvent}:any)=>{
                 <Text style={{marginLeft:15,color:"#F6819F",fontWeight:"500",marginTop:4,fontSize:17}} >Day:{item.day} </Text>
                 <Text style={{marginLeft:7,fontSize:18,fontWeight:"400",color:"#F6819F"}}> <Text style={{color:"white"}} >Nota:</Text> {item.message.length>limitLENGTH ?`${item.message.substring(0, 8)}...` :item.message}</Text>
 
-            <View style={{backgroundColor:item.color, marginLeft:20 , width:50,height:20,position:"absolute",right:20}}/>
+            <View style={{backgroundColor:item.color, marginLeft:20 , width:30,height:10,position:"absolute",right:20}}/>
 
             <Text  style={{marginLeft:10,color:"white",position:"absolute",right:10,top:19}} >{`${item.HourAndMinute}`}</Text>
             </View>  

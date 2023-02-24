@@ -4,8 +4,8 @@ import { ModalAppointment } from './ModalAppointment';
 import { AppointmentDataFirebase } from './ShowTask';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import Icon from 'react-native-vector-icons/Ionicons';
 export const ListCitas = ({ infoCitas }: { infoCitas: AppointmentDataFirebase }) => {
   const [isModalVisible, setModalVisible] = useState(false); 
   const toggleModal = () => {
@@ -37,39 +37,40 @@ firestore().collection('Users')
          
           <TouchableOpacity
               activeOpacity={0.9}
-              onPress={()=>toggleModal()}   
+              onPress={()=>setModalVisible(!isModalVisible)}   
               style={[styles.bottomAdd,{ width:width/1.2}]}                            
         >
         
             <View style={[styles.container,{backgroundColor:infoCitas.color as any}]}>
-            <BouncyCheckbox
+              <View style={{position:"absolute",top:13,left:10}} >  
+
+              <BouncyCheckbox
             
             size={25}
-            fillColor="#2A0D53"
+            fillColor="orange"
             unfillColor="#FFFFFF"
             bounceEffectIn={0.7}
             text={infoCitas.message!.length>10 ? infoCitas.message?.substring(0,8) + "..." :infoCitas.message}
             iconStyle={{ borderColor: "blue" }}
            
             textStyle={{ fontFamily: "JosefinSans-Regular",marginTop:0,fontSize:18,color:"white" }}
-              onPress={(isChecked: boolean) => {eliminarCita(infoCitas.key as any,isChecked)}}
+              onPress={(isChecked: boolean) => {eliminarCita(infoCitas.key!,isChecked)}}
 />
-<Text style={{color:"white",position:"absolute",right:13,bottom:22,fontSize:20,fontWeight:"bold"}}>{infoCitas.HourAndMinute}</Text> 
-             
+
+              </View>
+          
+<Text style={{color:"white",position:"absolute",right:13,bottom:18,fontSize:20,fontWeight:"bold"}}>{infoCitas.HourAndMinute}</Text> 
+            
             </View>
         </TouchableOpacity>  
-        <TouchableOpacity onPress={()=>Alert.alert("borrar cita"+infoCitas.key)} style={{position:"absolute",right:70,top:50}} >
-      
-
-        </TouchableOpacity>
+        
  
           <ModalAppointment 
              isModalVisible={isModalVisible}
              toggleModal={toggleModal}
              title={"Actualizacion"}
              HourAndMinute={infoCitas.HourAndMinute}
-             message={infoCitas.message}
-           
+             message={infoCitas.message}           
              type={"actualizar"}
              doc={infoCitas.key}
             
@@ -84,7 +85,7 @@ firestore().collection('Users')
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    padding: 28,
 
     borderRadius: 10,
     shadowColor: "#000",

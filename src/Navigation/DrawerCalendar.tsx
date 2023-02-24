@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { CalendarioScreen } from '../Screens/CalendarioScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, View, TouchableOpacity,ActivityIndicator,Text } from 'react-native';
 import { useEffect, useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import auth from '@react-native-firebase/auth';
@@ -35,11 +35,11 @@ export const DrawerCalendar=()=>{
 const MenuInterno=(props:DrawerContentComponentProps)=>{
   const [uriTem,settempUri] = useState<null>(null)
   const [imageUrl, setimageUrl] = useState<any>(null)
-  const [isvalid, setisvalid] = useState(false)  
+  const [isvalid, setisvalid] = useState(true)  
   const timestamp = firebase.firestore.Timestamp.now();
 
   const saubirImagenUserFireStorage=async(imageUri:any)=>{
-      console.log(imageUri)
+    setisvalid(true)
     let parts = imageUri?.split("rn");
       let newUrl = "rn" + parts[parts.length - 1];
       const reference = 
@@ -48,14 +48,14 @@ const MenuInterno=(props:DrawerContentComponentProps)=>{
     
     try {
       const snapshot = await reference.putFile(imageUri);
-    console.log(snapshot)
-      console.log("imagen subida correctamnete")
-    let nn= await  reference.getDownloadURL()
-    console.log(nn)
-   setimageUrl(nn)
+      let urlImage= await  reference.getDownloadURL()
+  
+   setimageUrl(urlImage)
+
+  
   
       firestore().collection("PhotoUser").doc(auth().currentUser?.email as any).collection("url").add({
-        URL:nn,
+        URL:urlImage,
         fechaHoraSubida:timestamp
       })
     } catch (error) {
@@ -69,13 +69,15 @@ const MenuInterno=(props:DrawerContentComponentProps)=>{
   }
   
    useEffect(() => { 
-   const suscriber= firestore().collection("PhotoUser").doc(auth().currentUser?.email as any).collection("url").orderBy('fechaHoraSubida', 'desc')
+ 
+    const suscriber= firestore().collection("PhotoUser").doc(auth().currentUser?.email as any).collection("url").orderBy('fechaHoraSubida', 'desc')
    .limit(1).onSnapshot(snapshot=>{
+  
     if(snapshot){
       snapshot.forEach((snap)=>{
         console.log(snap,"tiene algo")
         settempUri(snap.data().URL)
-      setisvalid(false)
+        setisvalid(false)
   })
     }else{
     return;
@@ -103,16 +105,29 @@ const logout=()=>{
     })
   }
 
-  console.log("uritemp",uriTem)
+
 
   return(
     <View style={{flex:1,backgroundColor:"#2A0D53"}} >
                     <TouchableOpacity style={{height:250,width:"100%", justifyContent:"center",alignItems:"center"}}
                     onPress={()=>PhthoGalery()}
                     >
+                      {
+                        isvalid ?
+                    
+                        <View>
+                  <ActivityIndicator size="large" color="white" />
+                       <Text style={{color:"white"}} >Subiendo Imagen...</Text>
+            
+                        </View>
+                     
+                       
+                        :
                         <Image
-                            source={{uri: uriTem? uriTem : "https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png"}}
-                            style={styles.avatar}/>
+                        source={{uri: uriTem? uriTem : "https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png"}}
+                        style={styles.avatar}/> 
+                      }
+                       
                     </TouchableOpacity>
                 
                 <DrawerContentScrollView

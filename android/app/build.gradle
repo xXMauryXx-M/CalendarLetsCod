@@ -99,13 +99,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.calendar"
+    namespace "com.calendarletscode"
     defaultConfig {
-        applicationId "com.calendar"
+        applicationId "com.calendarletscode"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.1"
+        versionCode 4
+        versionName "1.4"
     }
 
     splits {

@@ -1,6 +1,6 @@
 
 import React,{useState,useEffect} from "react"
-import { View, StyleSheet, Text, ActivityIndicator, useWindowDimensions, Image } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, useWindowDimensions, Image, TouchableOpacity, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from "react-native-calendars"
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -122,16 +122,17 @@ const getUpcomminEvets=()=>{
           id: 'default',
         },
       },
-    });
-
-  
+    });  
   }
         return(
         <View style={style.container} >
         <Icon onPress={()=>navigation.openDrawer()} name="reorder-three-sharp" size={45} color="white" style={{position:"absolute",top:height*0.02}} />
+        <TouchableOpacity onPress={()=>Alert.alert(" Disposible en Proximas Veriones!👌")} >
         <Image
                             source={{uri: urlimageFireabse? urlimageFireabse: "https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png"}}
-                            style={{height:50,width:50,position:"absolute",top:15,right:10,borderRadius:20}}/>
+                            style={{height:45,width:45,position:"absolute",top:36,right:10,borderRadius:20}}/>
+        
+        </TouchableOpacity>
         <Text style={[style.titleCalendar,{marginTop:height*0.1,}]} >Calendar</Text>
    {
           isLoading ? 
